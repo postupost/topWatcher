@@ -1,0 +1,80 @@
+<html>
+<link class="include" rel="stylesheet" type="text/css" href="jquery.jqplot.min.css" />
+<script src="jquery-1.7.min.js"></script>
+<script src="jquery.jqplot.min.js"></script>
+<script src="jqplot.pieRenderer.min.js"></script>
+<script src="commons.js"></script>
+<script type="text/javascript">
+
+function sortFunc(elem1, elem2) {
+	var count1 = elem1[1];
+	var count2 = elem2[1];
+	if (count2 > count1)
+		return 1;
+	if (count2 < count1)
+		return -1;
+	return 0;
+}
+
+function initPlot() {
+var query = { 'text': '', maxResults : 100000};
+	chrome.history.search(query, function(results) {
+		var sites = {};		
+		for(i in results) {
+				var item = results[i];
+				var siteName;
+				try {
+					siteName = getHostName(item.url);	
+				} catch(ex) {
+					continue;
+				}
+				if (sites[siteName] == null)
+					sites[siteName] = 1;
+				else
+					sites[siteName]++;		
+		}
+			
+		var dataArr = [];
+		$.each(sites, function(key, value) { 
+			dataArr.push([key, value]);
+		});		
+		
+		var sortedArr = dataArr.sort(sortFunc);
+		sortedArr.length = 10;
+		var plot1 = $.jqplot('visitsChart', [sortedArr], {
+				gridPadding: {top:0, bottom:0, left:0, right:0},
+			seriesDefaults:{
+				renderer:$.jqplot.PieRenderer,
+				trendline:{ show:false },
+				rendererOptions: { padding: 8, showDataLabels: true }
+			},
+			legend:{
+				show:true
+			} 					
+		});
+	});	
+}
+
+
+	
+$(document).ready(function(){
+	$("#openHomepage").click(function() {
+		window.open("http://postupost.com/topwatcher");
+	});
+
+	initPlot();
+});
+
+</script>
+
+<body>
+	<div>
+	<h3>TopWatcher - see <b>top 10</b> sites you visit</h3>
+	</div>
+		<div style="clear:both;"></div>
+    <div id="visitsChart" style="width:400px; height:0px;"></div>
+	<div style="clear:both; height:10px;"></div>
+	<a id="openHomepage" href="">View extension homepage</a>
+		<div style="clear:both;"></div>
+</body>
+</html>

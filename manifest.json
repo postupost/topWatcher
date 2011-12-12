@@ -1,0 +1,12 @@
+{
+  "name": "TopWatcher",
+  "version": "0.0.9",
+  "description": "Find out your own top 10 most visited sites",
+  "browser_action": {
+    "default_icon": "icon.png",
+	"default_popup" : "popup.html"
+  },
+  "permissions": [
+	"history"
+  ] 
+}
