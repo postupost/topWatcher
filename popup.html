@@ -26,7 +26,10 @@ function sortFunc(elem1, elem2) {
 function initPlot() {
 var query = { 'text': '', maxResults : 100000};
 	chrome.history.search(query, function(results) {
-		var sites = {};		
+		var sites = {};
+		if (results.length == 0)
+			return;
+			
 		for(i in results) {
 				var item = results[i];
 				var siteName;
